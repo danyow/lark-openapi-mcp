@@ -174,13 +174,13 @@ export const sheetsV2SpreadsheetValuesAppend = {
 
 /**
  * 插入行或列
- * POST /open-apis/sheets/v2/spreadsheets/:spreadsheet_token/dimension_range
+ * POST /open-apis/sheets/v2/spreadsheets/:spreadsheet_token/insert_dimension_range
  */
 export const sheetsV2SpreadsheetDimensionRangeInsert = {
   project: 'sheets',
   name: 'sheets.v2.spreadsheetDimensionRange.insert',
   sdkName: 'sheets.v2.spreadsheetDimensionRange.insert',
-  path: '/open-apis/sheets/v2/spreadsheets/:spreadsheet_token/dimension_range',
+  path: '/open-apis/sheets/v2/spreadsheets/:spreadsheet_token/insert_dimension_range',
   httpMethod: 'POST',
   description:
     '[飞书]-云文档-电子表格-行列操作-插入行或列-在工作表的指定位置插入空行或空列',
@@ -190,8 +190,8 @@ export const sheetsV2SpreadsheetDimensionRangeInsert = {
       dimension: z.object({
         sheetId: z.string().describe('要插入行/列的工作表 ID'),
         majorDimension: z.enum(['ROWS', 'COLUMNS']).describe('插入行还是列'),
-        startIndex: z.number().describe('插入的起始索引（从0开始）'),
-        length: z.number().describe('要插入的行/列数'),
+        startIndex: z.number().describe('插入的起始索引（从0开始，包含）'),
+        endIndex: z.number().describe('插入的结束索引（从0开始，不包含）。插入 (endIndex - startIndex) 行/列'),
       }),
       inheritStyle: z
         .enum(['BEFORE', 'AFTER'])

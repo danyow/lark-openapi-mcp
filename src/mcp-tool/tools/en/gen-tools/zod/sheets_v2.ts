@@ -174,13 +174,13 @@ export const sheetsV2SpreadsheetValuesAppend = {
 
 /**
  * Insert rows or columns
- * POST /open-apis/sheets/v2/spreadsheets/:spreadsheet_token/dimension_range
+ * POST /open-apis/sheets/v2/spreadsheets/:spreadsheet_token/insert_dimension_range
  */
 export const sheetsV2SpreadsheetDimensionRangeInsert = {
   project: 'sheets',
   name: 'sheets.v2.spreadsheetDimensionRange.insert',
   sdkName: 'sheets.v2.spreadsheetDimensionRange.insert',
-  path: '/open-apis/sheets/v2/spreadsheets/:spreadsheet_token/dimension_range',
+  path: '/open-apis/sheets/v2/spreadsheets/:spreadsheet_token/insert_dimension_range',
   httpMethod: 'POST',
   description:
     '[Feishu/Lark]-Docs-Sheets-Row-Column-Insert rows or columns-Insert empty rows or columns at the specified position in a sheet',
@@ -190,8 +190,8 @@ export const sheetsV2SpreadsheetDimensionRangeInsert = {
       dimension: z.object({
         sheetId: z.string().describe('Sheet ID where rows/columns will be inserted'),
         majorDimension: z.enum(['ROWS', 'COLUMNS']).describe('Whether to insert ROWS or COLUMNS'),
-        startIndex: z.number().describe('Start index (0-based) for insertion'),
-        length: z.number().describe('Number of rows/columns to insert'),
+        startIndex: z.number().describe('Start index (0-based, inclusive) for insertion'),
+        endIndex: z.number().describe('End index (0-based, exclusive) for insertion. Inserts (endIndex - startIndex) rows/columns'),
       }),
       inheritStyle: z
         .enum(['BEFORE', 'AFTER'])
