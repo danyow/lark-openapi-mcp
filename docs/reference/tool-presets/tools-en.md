@@ -1279,6 +1279,17 @@
 | --- | --- | --- |
 | security_and_compliance.v1.openapiLog.listData | [Obtain OpenAPI audit log](https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/security_and_compliance-v1/openapi_log/list_data) | This api is used to obtain OpenAPI audit log |
 
+## Business domain: sheetsV2
+| MCP Tool Name | API | Description |
+| --- | --- | --- |
+| sheets.v2.spreadsheetValues.get | [Read a single range](https://open.feishu.cn/document/ukTMukTMukTM/ugTMzUjL4EzM14COxMTN) | Read cell values from a specified range in a spreadsheet. The range format is sheet_id!A1:B2 or just A1:B2 for the first sheet |
+| sheets.v2.spreadsheetValues.batchGet | [Read multiple ranges](https://open.feishu.cn/document/ukTMukTMukTM/ukTMzUjL5EzM14SOxMTN) | Read cell values from multiple specified ranges in a spreadsheet |
+| sheets.v2.spreadsheetValues.update | [Write to a single range](https://open.feishu.cn/document/ukTMukTMukTM/uAjMzUjLwIzM14CMyMTN) | Write values to a specified range in a spreadsheet. Values will overwrite existing data |
+| sheets.v2.spreadsheetValues.batchUpdate | [Write to multiple ranges](https://open.feishu.cn/document/ukTMukTMukTM/uEjMzUjLxIzM14SMyMTN) | Write values to multiple specified ranges in a spreadsheet |
+| sheets.v2.spreadsheetValues.append | [Append data](https://open.feishu.cn/document/ukTMukTMukTM/uMjMzUjLzIzM14yMyMTN) | Append values after the last row with data in the specified range |
+| sheets.v2.spreadsheetDimensionRange.insert | [Insert rows or columns](https://open.feishu.cn/document/ukTMukTMukTM/uQjMzUjL0IzM14CNyMTN) | Insert empty rows or columns at the specified position in a sheet |
+| sheets.v2.spreadsheetDimensionRange.delete | [Delete rows or columns](https://open.feishu.cn/document/ukTMukTMukTM/uUjMzUjL1IzM14SNyMTN) | Delete rows or columns at the specified position in a sheet |
+
 ## Business domain: sheetsV3
 | MCP Tool Name | API | Description | 
 | --- | --- | --- |

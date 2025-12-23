@@ -1296,6 +1296,17 @@
 | --- | --- | --- |
 | security_and_compliance.v1.openapiLog.listData | [获取OpenAPI审计日志数据](https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/security_and_compliance-v1/openapi_log/list_data) | 该接口用于获取OpenAPI审计日志数据 |
 
+## 业务域: sheetsV2
+| MCP 工具名称 | API | 描述 |
+| --- | --- | --- |
+| sheets.v2.spreadsheetValues.get | [读取单个范围](https://open.feishu.cn/document/ukTMukTMukTM/ugTMzUjL4EzM14COxMTN) | 从电子表格的指定范围读取单元格的值。范围格式为 sheet_id!A1:B2 或仅 A1:B2（默认第一个工作表） |
+| sheets.v2.spreadsheetValues.batchGet | [读取多个范围](https://open.feishu.cn/document/ukTMukTMukTM/ukTMzUjL5EzM14SOxMTN) | 从电子表格的多个指定范围读取单元格的值 |
+| sheets.v2.spreadsheetValues.update | [写入单个范围](https://open.feishu.cn/document/ukTMukTMukTM/uAjMzUjLwIzM14CMyMTN) | 向电子表格的指定范围写入值，会覆盖现有数据 |
+| sheets.v2.spreadsheetValues.batchUpdate | [写入多个范围](https://open.feishu.cn/document/ukTMukTMukTM/uEjMzUjLxIzM14SMyMTN) | 向电子表格的多个指定范围写入值 |
+| sheets.v2.spreadsheetValues.append | [追加数据](https://open.feishu.cn/document/ukTMukTMukTM/uMjMzUjLzIzM14yMyMTN) | 在指定范围的最后一行有数据的位置之后追加值 |
+| sheets.v2.spreadsheetDimensionRange.insert | [插入行或列](https://open.feishu.cn/document/ukTMukTMukTM/uQjMzUjL0IzM14CNyMTN) | 在工作表的指定位置插入空行或空列 |
+| sheets.v2.spreadsheetDimensionRange.delete | [删除行或列](https://open.feishu.cn/document/ukTMukTMukTM/uUjMzUjL1IzM14SNyMTN) | 删除工作表中指定位置的行或列 |
+
 ## 业务域: sheetsV3
 | MCP 工具名称 | API | 描述 | 
 | --- | --- | --- |

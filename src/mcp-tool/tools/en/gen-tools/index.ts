@@ -47,6 +47,7 @@ import { personalSettingsV1Tools, personalSettingsV1ToolName } from './zod/perso
 import { reportV1Tools, reportV1ToolName } from './zod/report_v1';
 import { searchV2Tools, searchV2ToolName } from './zod/search_v2';
 import { securityAndComplianceV1Tools, securityAndComplianceV1ToolName } from './zod/security_and_compliance_v1';
+import { sheetsV2Tools, sheetsV2ToolName } from './zod/sheets_v2';
 import { sheetsV3Tools, sheetsV3ToolName } from './zod/sheets_v3';
 import { speechToTextV1Tools, speechToTextV1ToolName } from './zod/speech_to_text_v1';
 import { taskV1Tools, taskV1ToolName } from './zod/task_v1';
@@ -109,6 +110,7 @@ export type ToolName =
   | reportV1ToolName
   | searchV2ToolName
   | securityAndComplianceV1ToolName
+  | sheetsV2ToolName
   | sheetsV3ToolName
   | speechToTextV1ToolName
   | taskV1ToolName
@@ -224,6 +226,7 @@ export const GenTools = [
   ...reportV1Tools,
   ...searchV2Tools,
   ...securityAndComplianceV1Tools,
+  ...sheetsV2Tools,
   ...sheetsV3Tools,
   ...speechToTextV1Tools,
   ...taskV1Tools,
