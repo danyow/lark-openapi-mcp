@@ -191,7 +191,7 @@ export const sheetsV2SpreadsheetDimensionRangeInsert = {
         sheetId: z.string().describe('要插入行/列的工作表 ID'),
         majorDimension: z.enum(['ROWS', 'COLUMNS']).describe('插入行还是列'),
         startIndex: z.number().describe('插入的起始索引（从0开始）'),
-        endIndex: z.number().describe('插入的结束索引（不包含）。endIndex - startIndex = 插入的行/列数'),
+        length: z.number().describe('要插入的行/列数'),
       }),
       inheritStyle: z
         .enum(['BEFORE', 'AFTER'])
@@ -223,8 +223,8 @@ export const sheetsV2SpreadsheetDimensionRangeDelete = {
       dimension: z.object({
         sheetId: z.string().describe('要删除行/列的工作表 ID'),
         majorDimension: z.enum(['ROWS', 'COLUMNS']).describe('删除行还是列'),
-        startIndex: z.number().describe('删除的起始索引（从0开始）'),
-        endIndex: z.number().describe('删除的结束索引（不包含）'),
+        startIndex: z.number().describe('删除的起始索引（从0开始，包含）'),
+        endIndex: z.number().describe('删除的结束索引（从0开始，包含）。删除从 startIndex 到 endIndex 的所有行/列（两端都包含）'),
       }),
     }),
     path: z.object({

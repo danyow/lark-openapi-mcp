@@ -191,7 +191,7 @@ export const sheetsV2SpreadsheetDimensionRangeInsert = {
         sheetId: z.string().describe('Sheet ID where rows/columns will be inserted'),
         majorDimension: z.enum(['ROWS', 'COLUMNS']).describe('Whether to insert ROWS or COLUMNS'),
         startIndex: z.number().describe('Start index (0-based) for insertion'),
-        endIndex: z.number().describe('End index (exclusive) for insertion. endIndex - startIndex = number of rows/columns to insert'),
+        length: z.number().describe('Number of rows/columns to insert'),
       }),
       inheritStyle: z
         .enum(['BEFORE', 'AFTER'])
@@ -223,8 +223,8 @@ export const sheetsV2SpreadsheetDimensionRangeDelete = {
       dimension: z.object({
         sheetId: z.string().describe('Sheet ID where rows/columns will be deleted'),
         majorDimension: z.enum(['ROWS', 'COLUMNS']).describe('Whether to delete ROWS or COLUMNS'),
-        startIndex: z.number().describe('Start index (0-based) for deletion'),
-        endIndex: z.number().describe('End index (exclusive) for deletion'),
+        startIndex: z.number().describe('Start index (0-based, inclusive) for deletion'),
+        endIndex: z.number().describe('End index (0-based, inclusive) for deletion. Deletes rows/columns from startIndex to endIndex (both inclusive)'),
       }),
     }),
     path: z.object({
