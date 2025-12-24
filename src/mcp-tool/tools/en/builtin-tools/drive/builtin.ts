@@ -1,9 +1,9 @@
 import { McpTool } from '../../../../types';
-import * as lark from '@larksuiteoapi/node-sdk';
 import { z } from 'zod';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
+import { commonHttpInstance } from '../../../../../utils/http-instance';
 
 // Tool name type
 export type driveBuiltinToolName = 'drive.v1.exportTask.download';
@@ -64,46 +64,79 @@ export const larkDriveExportTaskDownloadTool: McpTool = {
       }
 
       const filePath = path.join(outputDir, fileName);
+      const debug: string[] = [];
+      debug.push(`fileToken: ${fileToken}`);
+      debug.push(`useUAT: ${params?.useUAT}, hasUserAccessToken: ${!!userAccessToken}`);
 
-      // Use SDK's built-in download method which returns writeFile/getReadableStream
-      let response: any;
+      // Get access token from SDK client
+      let accessToken: string | undefined;
       if (userAccessToken && params?.useUAT) {
-        response = await client.drive.exportTask.download(
-          { path: { file_token: fileToken } },
-          lark.withUserAccessToken(userAccessToken)
-        );
+        accessToken = userAccessToken;
+        debug.push('using user access token');
       } else {
-        response = await client.drive.exportTask.download({ path: { file_token: fileToken } });
+        // Get tenant access token from client
+        try {
+          const tokenRes = await (client as any).tokenManager?.getTenantAccessToken();
+          accessToken = tokenRes;
+          debug.push('using tenant access token');
+        } catch (tokenError: any) {
+          debug.push(`failed to get tenant token: ${tokenError?.message}`);
+        }
       }
 
-      // Use the SDK's writeFile method to save the file
-      if (response?.writeFile) {
-        await response.writeFile(filePath);
-      } else if (response?.getReadableStream) {
-        // Fallback to stream if writeFile is not available
-        const readableStream = response.getReadableStream();
-        const writableStream = fs.createWriteStream(filePath);
-        await new Promise<void>((resolve, reject) => {
-          readableStream.pipe(writableStream);
-          writableStream.on('finish', resolve);
-          writableStream.on('error', reject);
-          readableStream.on('error', reject);
-        });
-      } else {
+      if (!accessToken) {
         return {
           isError: true,
-          content: [{ type: 'text' as const, text: JSON.stringify({ 
-            msg: 'Failed to download file: SDK response does not contain writeFile or getReadableStream',
-            debug: { responseKeys: response ? Object.keys(response) : [] }
+          content: [{ type: 'text' as const, text: JSON.stringify({
+            msg: 'Failed to get access token',
+            debug
           }) }],
         };
       }
+
+      // Use commonHttpInstance directly (with proxy support) instead of SDK's download method
+      const domain = (client as any).domain || 'https://open.feishu.cn';
+      const downloadUrl = `${domain}/open-apis/drive/v1/export_tasks/file/${fileToken}/download`;
+      debug.push(`downloadUrl: ${downloadUrl}`);
+
+      const response = await commonHttpInstance.request({
+        url: downloadUrl,
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        responseType: 'stream',
+        timeout: 60000, // 60 seconds timeout for download
+      });
+
+      debug.push(`response status: ${response.status}`);
+
+      // Check if we got a valid stream response
+      if (!response.data) {
+        return {
+          isError: true,
+          content: [{ type: 'text' as const, text: JSON.stringify({
+            msg: 'Failed to download file: empty response',
+            debug
+          }) }],
+        };
+      }
+
+      // Write stream to file
+      const writableStream = fs.createWriteStream(filePath);
+      await new Promise<void>((resolve, reject) => {
+        response.data.pipe(writableStream);
+        writableStream.on('finish', resolve);
+        writableStream.on('error', reject);
+        response.data.on('error', reject);
+      });
+      debug.push('stream completed');
 
       // Check if file was created and get stats
       if (!fs.existsSync(filePath)) {
         return {
           isError: true,
-          content: [{ type: 'text' as const, text: JSON.stringify({ msg: 'Failed to download file: file was not created' }) }],
+          content: [{ type: 'text' as const, text: JSON.stringify({ msg: 'Failed to download file: file was not created', debug }) }],
         };
       }
 
@@ -124,6 +157,39 @@ export const larkDriveExportTaskDownloadTool: McpTool = {
         ],
       };
     } catch (error: any) {
+      // Handle API error responses
+      if (error?.response?.data) {
+        // For stream responses, we need to read the error from the stream
+        const errorData = error.response.data;
+        if (typeof errorData.pipe === 'function') {
+          // It's a stream, try to read it
+          const chunks: Buffer[] = [];
+          for await (const chunk of errorData) {
+            chunks.push(chunk);
+          }
+          const errorText = Buffer.concat(chunks).toString('utf-8');
+          try {
+            const errorJson = JSON.parse(errorText);
+            return {
+              isError: true,
+              content: [{ type: 'text' as const, text: JSON.stringify({
+                msg: 'API error',
+                code: errorJson.code,
+                error: errorJson.msg || 'Unknown error',
+                hint: 'The file_token may be invalid or expired. Export files are deleted 10 minutes after the export task completes.',
+              }) }],
+            };
+          } catch {
+            return {
+              isError: true,
+              content: [{ type: 'text' as const, text: JSON.stringify({
+                msg: 'Failed to download export file',
+                error: errorText,
+              }) }],
+            };
+          }
+        }
+      }
       return {
         isError: true,
         content: [
