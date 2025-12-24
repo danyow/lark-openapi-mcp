@@ -223,8 +223,8 @@ export const sheetsV2SpreadsheetDimensionRangeDelete = {
       dimension: z.object({
         sheetId: z.string().describe('Sheet ID where rows/columns will be deleted'),
         majorDimension: z.enum(['ROWS', 'COLUMNS']).describe('Whether to delete ROWS or COLUMNS'),
-        startIndex: z.number().describe('Start index (0-based, inclusive) for deletion'),
-        endIndex: z.number().describe('End index (0-based, inclusive) for deletion. Deletes rows/columns from startIndex to endIndex (both inclusive)'),
+        startIndex: z.number().describe('Start index (1-based, inclusive) for deletion. To delete row 102, use startIndex=102'),
+        endIndex: z.number().describe('End index (1-based, inclusive) for deletion. Deletes rows/columns from startIndex to endIndex (both inclusive). To delete a single row N, use startIndex=N, endIndex=N. Example: delete row 102 → startIndex=102, endIndex=102'),
       }),
     }),
     path: z.object({

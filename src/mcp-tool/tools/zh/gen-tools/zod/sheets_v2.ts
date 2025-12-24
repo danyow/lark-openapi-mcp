@@ -223,8 +223,8 @@ export const sheetsV2SpreadsheetDimensionRangeDelete = {
       dimension: z.object({
         sheetId: z.string().describe('要删除行/列的工作表 ID'),
         majorDimension: z.enum(['ROWS', 'COLUMNS']).describe('删除行还是列'),
-        startIndex: z.number().describe('删除的起始索引（从0开始，包含）'),
-        endIndex: z.number().describe('删除的结束索引（从0开始，包含）。删除从 startIndex 到 endIndex 的所有行/列（两端都包含）'),
+        startIndex: z.number().describe('删除的起始索引（从1开始，包含）。删除第102行：startIndex=102'),
+        endIndex: z.number().describe('删除的结束索引（从1开始，包含）。删除从 startIndex 到 endIndex 的所有行/列（两端都包含）。删除单行N：startIndex=N, endIndex=N。示例：删除第102行 → startIndex=102, endIndex=102'),
       }),
     }),
     path: z.object({
