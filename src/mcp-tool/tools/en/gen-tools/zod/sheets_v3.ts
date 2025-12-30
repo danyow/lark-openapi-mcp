@@ -26,7 +26,9 @@ export type sheetsV3ToolName =
   | 'sheets.v3.spreadsheetSheet.get'
   | 'sheets.v3.spreadsheetSheet.moveDimension'
   | 'sheets.v3.spreadsheetSheet.query'
-  | 'sheets.v3.spreadsheetSheet.replace';
+  | 'sheets.v3.spreadsheetSheet.replace'
+  | 'sheets.v3.spreadsheetSheet.mergeCells'
+  | 'sheets.v3.spreadsheetSheet.unmergeCells';
 export const sheetsV3SpreadsheetCreate = {
   project: 'sheets',
   name: 'sheets.v3.spreadsheet.create',
@@ -779,6 +781,63 @@ export const sheetsV3SpreadsheetSheetReplace = {
     useUAT: z.boolean().describe('Use user access token, otherwise use tenant access token').optional(),
   },
 };
+export const sheetsV3SpreadsheetSheetMergeCells = {
+  project: 'sheets',
+  name: 'sheets.v3.spreadsheetSheet.mergeCells',
+  sdkName: 'sheets.v3.spreadsheetSheet.mergeCells',
+  path: '/open-apis/sheets/v3/spreadsheets/:spreadsheet_token/sheets/:sheet_id/merge_cells',
+  httpMethod: 'POST',
+  description:
+    '[Feishu/Lark]-Docs-Sheets-Cell-Merge cells-Merge cells in the specified range within the spreadsheet. Single operation limited to 5000 rows and 100 columns',
+  accessTokens: ['tenant', 'user'],
+  schema: {
+    data: z.object({
+      range: z
+        .string()
+        .describe(
+          'The range of cells to merge. Format: `<sheetId>!<start>:<end>`. Example: `sheet_id!A1:B2`',
+        ),
+      merge_type: z
+        .enum(['MERGE_ALL', 'MERGE_ROWS', 'MERGE_COLUMNS'])
+        .describe(
+          'Merge type. - MERGE_ALL: Merge all selected cells into one- MERGE_ROWS: Merge selected area by rows- MERGE_COLUMNS: Merge selected area by columns',
+        ),
+    }),
+    path: z
+      .object({
+        spreadsheet_token: z.string().describe('Spreadsheet token').optional(),
+        sheet_id: z.string().describe('Sheet id').optional(),
+      })
+      .optional(),
+    useUAT: z.boolean().describe('Use user access token, otherwise use tenant access token').optional(),
+  },
+};
+export const sheetsV3SpreadsheetSheetUnmergeCells = {
+  project: 'sheets',
+  name: 'sheets.v3.spreadsheetSheet.unmergeCells',
+  sdkName: 'sheets.v3.spreadsheetSheet.unmergeCells',
+  path: '/open-apis/sheets/v3/spreadsheets/:spreadsheet_token/sheets/:sheet_id/unmerge_cells',
+  httpMethod: 'POST',
+  description:
+    '[Feishu/Lark]-Docs-Sheets-Cell-Unmerge cells-Split merged cells in the specified range within the spreadsheet',
+  accessTokens: ['tenant', 'user'],
+  schema: {
+    data: z.object({
+      range: z
+        .string()
+        .describe(
+          'The range of cells to unmerge. Format: `<sheetId>!<start>:<end>`. Example: `sheet_id!A1:B2`',
+        ),
+    }),
+    path: z
+      .object({
+        spreadsheet_token: z.string().describe('Spreadsheet token').optional(),
+        sheet_id: z.string().describe('Sheet id').optional(),
+      })
+      .optional(),
+    useUAT: z.boolean().describe('Use user access token, otherwise use tenant access token').optional(),
+  },
+};
 export const sheetsV3Tools = [
   sheetsV3SpreadsheetCreate,
   sheetsV3SpreadsheetGet,
@@ -807,4 +866,6 @@ export const sheetsV3Tools = [
   sheetsV3SpreadsheetSheetMoveDimension,
   sheetsV3SpreadsheetSheetQuery,
   sheetsV3SpreadsheetSheetReplace,
+  sheetsV3SpreadsheetSheetMergeCells,
+  sheetsV3SpreadsheetSheetUnmergeCells,
 ];

@@ -26,7 +26,9 @@ export type sheetsV3ToolName =
   | 'sheets.v3.spreadsheetSheet.get'
   | 'sheets.v3.spreadsheetSheet.moveDimension'
   | 'sheets.v3.spreadsheetSheet.query'
-  | 'sheets.v3.spreadsheetSheet.replace';
+  | 'sheets.v3.spreadsheetSheet.replace'
+  | 'sheets.v3.spreadsheetSheet.mergeCells'
+  | 'sheets.v3.spreadsheetSheet.unmergeCells';
 export const sheetsV3SpreadsheetCreate = {
   project: 'sheets',
   name: 'sheets.v3.spreadsheet.create',
@@ -935,6 +937,73 @@ export const sheetsV3SpreadsheetSheetReplace = {
     useUAT: z.boolean().describe('使用用户身份请求, 否则使用应用身份').optional(),
   },
 };
+export const sheetsV3SpreadsheetSheetMergeCells = {
+  project: 'sheets',
+  name: 'sheets.v3.spreadsheetSheet.mergeCells',
+  sdkName: 'sheets.v3.spreadsheetSheet.mergeCells',
+  path: '/open-apis/sheets/v3/spreadsheets/:spreadsheet_token/sheets/:sheet_id/merge_cells',
+  httpMethod: 'POST',
+  description:
+    '[Feishu/Lark]-云文档-电子表格-单元格-合并单元格-合并电子表格工作表中指定范围内的单元格。单次操作不超过5000行、100列',
+  accessTokens: ['tenant', 'user'],
+  schema: {
+    data: z.object({
+      range: z
+        .string()
+        .describe(
+          '要合并的单元格范围。格式为 `<sheetId>!<开始位置>:<结束位置>`。例如 `sheet_id!A1:B2`',
+        ),
+      merge_type: z
+        .enum(['MERGE_ALL', 'MERGE_ROWS', 'MERGE_COLUMNS'])
+        .describe(
+          '合并类型。- MERGE_ALL：将所选区域直接合并- MERGE_ROWS：将所选区域按行合并- MERGE_COLUMNS：将所选区域按列合并',
+        ),
+    }),
+    path: z
+      .object({
+        spreadsheet_token: z
+          .string()
+          .describe(
+            '电子表格的 token。可通过以下两种方式获取。了解更多，参考[电子表格概述]。- 电子表格的 URL：https://sample.feishu.cn/sheets/==Iow7sNNEphp3WbtnbCscPqabcef==- 调用[获取文件夹中的文件清单]',
+          )
+          .optional(),
+        sheet_id: z.string().describe('工作表的 ID，获取方式见[获取工作表]').optional(),
+      })
+      .optional(),
+    useUAT: z.boolean().describe('使用用户身份请求, 否则使用应用身份').optional(),
+  },
+};
+export const sheetsV3SpreadsheetSheetUnmergeCells = {
+  project: 'sheets',
+  name: 'sheets.v3.spreadsheetSheet.unmergeCells',
+  sdkName: 'sheets.v3.spreadsheetSheet.unmergeCells',
+  path: '/open-apis/sheets/v3/spreadsheets/:spreadsheet_token/sheets/:sheet_id/unmerge_cells',
+  httpMethod: 'POST',
+  description:
+    '[Feishu/Lark]-云文档-电子表格-单元格-拆分单元格-拆分电子表格工作表中指定范围内的合并单元格',
+  accessTokens: ['tenant', 'user'],
+  schema: {
+    data: z.object({
+      range: z
+        .string()
+        .describe(
+          '要拆分的单元格范围。格式为 `<sheetId>!<开始位置>:<结束位置>`。例如 `sheet_id!A1:B2`',
+        ),
+    }),
+    path: z
+      .object({
+        spreadsheet_token: z
+          .string()
+          .describe(
+            '电子表格的 token。可通过以下两种方式获取。了解更多，参考[电子表格概述]。- 电子表格的 URL：https://sample.feishu.cn/sheets/==Iow7sNNEphp3WbtnbCscPqabcef==- 调用[获取文件夹中的文件清单]',
+          )
+          .optional(),
+        sheet_id: z.string().describe('工作表的 ID，获取方式见[获取工作表]').optional(),
+      })
+      .optional(),
+    useUAT: z.boolean().describe('使用用户身份请求, 否则使用应用身份').optional(),
+  },
+};
 export const sheetsV3Tools = [
   sheetsV3SpreadsheetCreate,
   sheetsV3SpreadsheetGet,
@@ -963,4 +1032,6 @@ export const sheetsV3Tools = [
   sheetsV3SpreadsheetSheetMoveDimension,
   sheetsV3SpreadsheetSheetQuery,
   sheetsV3SpreadsheetSheetReplace,
+  sheetsV3SpreadsheetSheetMergeCells,
+  sheetsV3SpreadsheetSheetUnmergeCells,
 ];
